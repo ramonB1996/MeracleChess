@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>MeracleChess.Core</id>
+    <version>0.1.0-alpha</version>
+    <title>MeracleChess.Core</title>
+    <authors>ramonb1996</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <!-- <icon>icon.png</icon> -->
+    <projectUrl>https://github.com/ramonB1996/MeracleChess</projectUrl>
+    <description>Library containing the core logic to create a chess game. Easy-to-use for creating your own UX on top of this library.</description>
+    <releaseNotes>Initial release</releaseNotes>
+    <tags>chess</tags>
+    <readme>README.md</readme>
+  </metadata>
+
+  <!-- A readme.txt to display when the package is installed -->
+  <files>
+    <file src="README.md" target="" />
+  </files>
+</package>
