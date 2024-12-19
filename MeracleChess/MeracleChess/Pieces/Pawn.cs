@@ -2,23 +2,19 @@
 
 namespace MeracleChess.Pieces
 {
-    public class Pawn : Piece
+    public class Pawn(Board board, Color color, Position startingPosition, bool hasMovedSinceStart = false)
+        : Piece(board, color, startingPosition, hasMovedSinceStart)
     {
         private int PromotionYPosition => Color == Color.White ? 7 : 0;
 
         public int DirectionToMoveInY => Color == Color.White ? 1 : -1;
 
         public override int Value => 1;
-        public override string FenSymbol => this.Color == Color.White ? "P" : "p";
-
-        public Pawn(Board board, Color color, Position startingPosition, bool hasMovedSinceStart = false)
-            : base(board, color, startingPosition, hasMovedSinceStart)
-        {
-        }
+        public override string FenSymbol => Color == Color.White ? "P" : "p";
 
         public override string ToString() => "pawn";
 
-        public override List<PositionWithType> GetValidMoves()
+        public override IEnumerable<PositionWithType> GetValidMoves()
         {
             List<PositionWithType> result = new List<PositionWithType>();
 
@@ -51,7 +47,7 @@ namespace MeracleChess.Pieces
             return result;
         }
 
-        public override List<Position> GetAttackedPositions() => GetAttackablePositions().Select(x => x.Position).ToList();
+        public override IEnumerable<Position> GetAttackedPositions() => GetAttackablePositions().Select(x => x.Position).ToList();
 
         private Position? Get1TileMove()
         {
@@ -86,8 +82,8 @@ namespace MeracleChess.Pieces
         {
             List<Position> possibleEnPassants = new List<Position>()
             {
-                new Position(CurrentPosition.X - 1, CurrentPosition.Y),
-                new Position(CurrentPosition.X + 1, CurrentPosition.Y)
+                new(CurrentPosition.X - 1, CurrentPosition.Y),
+                new(CurrentPosition.X + 1, CurrentPosition.Y)
             };
 
             foreach (Position position in possibleEnPassants)
@@ -124,7 +120,7 @@ namespace MeracleChess.Pieces
             return null;
         }
         
-        private List<PositionWithType> GetAttackablePositions()
+        private IEnumerable<PositionWithType> GetAttackablePositions()
         {
             List<PositionWithType> result = new List<PositionWithType>();
 

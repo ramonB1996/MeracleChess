@@ -3,40 +3,52 @@ using MeracleChess.Exceptions;
 
 namespace MeracleChess.Pieces
 {
-    public abstract class Piece
+    public abstract class Piece(Board board, Color color, Position startingPosition, bool hasMovedSinceStart)
     {
-        protected readonly Board Board;
+        protected readonly Board Board = board;
 
-        public Color Color { get; }
+        /// <summary>
+        /// Color is white or black.
+        /// </summary>
+        public Color Color { get; } = color;
 
-        public Position StartingPosition { get; }
+        /// <summary>
+        /// Position of the piece at the very start of the game.
+        /// </summary>
+        public Position StartingPosition { get; } = startingPosition;
 
-        public Position CurrentPosition { get; set; }
+        /// <summary>
+        /// Position of the piece that it has now, after being moved (or not).
+        /// Will be equal to StartingPosition as long as HasMovedSinceStart = false.
+        /// </summary>
+        public Position CurrentPosition { get; set; } = startingPosition;
 
-        public bool HasMovedSinceStart { get; set; }
+        /// <summary>
+        /// Determines if the piece has moved yet. 
+        /// Used for determining 'en passant' and 'castling' rights.
+        /// </summary>
+        public bool HasMovedSinceStart { get; set; } = hasMovedSinceStart;
 
-        public virtual int Value { get; } = 0;
-        public virtual string NotationSymbol { get; } = string.Empty;
-        public virtual string FenSymbol { get; } = string.Empty;
+        /// <summary>
+        /// Value of the piece:
+        /// Queen = 8
+        /// Rook = 5
+        /// Knight/Bishop = 3
+        /// Pawn = 1
+        /// King = 0
+        /// </summary>
+        public virtual int Value => 0;
 
-        public Piece(Board board, Color color, Position startingPosition, bool hasMovedSinceStart)
+        public virtual string NotationSymbol => string.Empty;
+        public virtual string FenSymbol => string.Empty;
+        
+        /// <summary>
+        /// List of positions that are valid for this piece with the type of the action needed to claim the position.
+        /// </summary>
+        /// <returns>Returns an <see cref="IEnumerable{T}" /> of type <see cref="PositionWithType"/></returns>
+        public virtual IEnumerable<PositionWithType> GetValidPositions()
         {
-            Board = board;
-            Color = color;
-            StartingPosition = startingPosition;
-            CurrentPosition = startingPosition;
-            HasMovedSinceStart = hasMovedSinceStart;
-        }
-
-        public abstract List<PositionWithType> GetValidMoves();
-
-        public abstract List<Position> GetAttackedPositions();
-
-        public override abstract string ToString();
-
-        public virtual List<PositionWithType> GetValidPositions()
-        {
-            List<PositionWithType> result = GetValidMoves();
+            IEnumerable<PositionWithType> result = GetValidMoves();
 
             (bool isDenyingCheck, List<Position> allowedPositions) = IsDenyingCheckWithPositions();
 
@@ -47,7 +59,7 @@ namespace MeracleChess.Pieces
 
             if (Board.OurKing(Color).IsChecked)
             {
-                List<Position> possibleMovesToDenyCheck = ShowPossibleMovesToDenyCheck();
+                IEnumerable<Position> possibleMovesToDenyCheck = ShowPossibleMovesToDenyCheck();
 
                 return result.Where(x => possibleMovesToDenyCheck.Contains(x.Position)).ToList();
             }
@@ -55,13 +67,19 @@ namespace MeracleChess.Pieces
             return result;
         }
 
+        /// <summary>
+        /// Move the piece to the given position.
+        /// </summary>
+        /// <param name="positionWithType"></param>
+        /// <exception cref="PositionNotValidException">Given position is not possible for this piece, hence invalid.</exception>
+        /// <exception cref="NotFoundException">Rook was not in correct position needed for castling.</exception>
         public void MoveToPosition(PositionWithType positionWithType)
         {
-            List<PositionWithType> validPositions = GetValidPositions();
+            IEnumerable<PositionWithType> validPositions = GetValidPositions();
 
             if (!validPositions.Contains(positionWithType))
             {
-                throw new Exception($"Can not move to position {positionWithType.Position.X}:{positionWithType.Position.Y} with {this.ToString()}. {nameof(validPositions)} does not contain this position, hence it is not a valid position.");
+                throw new PositionNotValidException($"Can not move to position {positionWithType.Position.X}:{positionWithType.Position.Y} with {ToString()}. {nameof(validPositions)} does not contain this position, hence it is not a valid position.");
             }
 
             switch (positionWithType.Type)
@@ -89,7 +107,7 @@ namespace MeracleChess.Pieces
 
                     if (possibleKingSideRookPiece is not Rook kingSideRook)
                     {
-                        throw new NotFoundException($"Rook could not be found on position: {currentKingSideRookPosition} while castling on Kingside!");
+                        throw new NotFoundException($"Rook could not be found on position: {currentKingSideRookPosition} while castling on king's side!");
                     }
 
                     Position newKingSideRookPosition = new Position(kingSideRook.CurrentPosition.X - 2, kingSideRook.CurrentPosition.Y);
@@ -104,7 +122,7 @@ namespace MeracleChess.Pieces
 
                     if (possibleQueenSideRookPiece is not Rook queenSideRook)
                     {
-                        throw new NotFoundException($"Rook could not be found on position: {currentQueenSideRookPosition} while castling on Queenside!");
+                        throw new NotFoundException($"Rook could not be found on position: {currentQueenSideRookPosition} while castling on queen's side!");
                     }
 
                     Position newQueenSideRookPosition = new Position(queenSideRook.CurrentPosition.X + 3, queenSideRook .CurrentPosition.Y);
@@ -119,14 +137,18 @@ namespace MeracleChess.Pieces
                     break;
             }
         }
-
-        protected List<Position> ShowPossibleMovesToDenyCheck()
+        
+        public abstract IEnumerable<Position> GetAttackedPositions();
+        
+        public abstract IEnumerable<PositionWithType> GetValidMoves();
+        
+        private IEnumerable<Position> ShowPossibleMovesToDenyCheck()
         {
-            List<Position> result = new List<Position>();
+            IList<Position> result = new List<Position>();
 
             IEnumerable<Piece> opponentPiecesCausingCheck = Board.OpponentPiecesCausingCheck(Color);
 
-            if (opponentPiecesCausingCheck.Count() <= 0 || opponentPiecesCausingCheck.Count() > 2)
+            if (!opponentPiecesCausingCheck.Any() || opponentPiecesCausingCheck.Count() > 2)
             {
                 throw new Exception("OurKing.OpponentPiecesCausingCheck not working correctly!");
             }
@@ -159,7 +181,7 @@ namespace MeracleChess.Pieces
             return new List<Position>();
         }
 
-        protected (bool isDenyingCheck, List<Position> allowedPositions) IsDenyingCheckWithPositions()
+        private (bool isDenyingCheck, List<Position> allowedPositions) IsDenyingCheckWithPositions()
         {
             Board.Pieces.Remove(this);
 
@@ -197,5 +219,7 @@ namespace MeracleChess.Pieces
 
             return (false, new List<Position>());
         }
+        
+        public abstract override string ToString();
     }
 }

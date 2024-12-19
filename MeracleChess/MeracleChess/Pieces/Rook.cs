@@ -2,19 +2,16 @@
 
 namespace MeracleChess.Pieces;
 
-public class Rook : Piece
+public class Rook(Board board, Color color, Position startingPosition, bool hasMovedSinceStart = false)
+    : Piece(board, color, startingPosition, hasMovedSinceStart)
 {
     public override int Value => 5;
     public override string NotationSymbol => this.Color == Color.White ? "R" : "r";
     public override string FenSymbol => NotationSymbol;
 
-    public Rook(Board board, Color color, Position startingPosition, bool hasMovedSinceStart = false) : base(board, color, startingPosition, hasMovedSinceStart)
-    {
-    }
-
     public override string ToString() => "rook";
 
-    public override List<PositionWithType> GetValidMoves()
+    public override IEnumerable<PositionWithType> GetValidMoves()
     {
         List<PositionWithType> result = new List<PositionWithType>();
 
@@ -26,7 +23,7 @@ public class Rook : Piece
         return result;
     }
 
-    public override List<Position> GetAttackedPositions()
+    public override IEnumerable<Position> GetAttackedPositions()
     {
         List<Position> result = new List<Position>();
 

@@ -6,12 +6,12 @@ namespace MeracleChess
 {
     public class Position : IEquatable<Position>
     {
-        private static readonly List<char> _files = new List<char> { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
-        private static readonly List<char> _ranks = new List<char> { '1', '2', '3', '4', '5', '6', '7', '8' };
+        private static readonly List<char> Files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+        private static readonly List<char> Ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
-        public int X { get; set; }
+        public int X { get; }
 
-        public int Y { get; set; }
+        public int Y { get; }
 
         public Position(int x, int y)
         {
@@ -27,8 +27,8 @@ namespace MeracleChess
             Y = position.Y;
         }
 
-        public static int GetColumnFromCharacter(char character) => _files.IndexOf(character);
-        public static int GetRowFromCharacter(char character) => _ranks.IndexOf(character);
+        private static int GetColumnFromCharacter(char character) => Files.IndexOf(character);
+        private static int GetRowFromCharacter(char character) => Ranks.IndexOf(character);
 
         public static Position GetPositionInDirection(Position position, MoveDirection direction)
         {
@@ -123,7 +123,7 @@ namespace MeracleChess
             char xCharacter = notation.ToLower().First();
             char yCharacter = notation.ToLower().Last();
 
-            if (!_files.Contains(xCharacter) || !_ranks.Contains(yCharacter))
+            if (!Files.Contains(xCharacter) || !Ranks.Contains(yCharacter))
             {
                 throw new ParsePositionException($"{nameof(notation)} was outside the board. Needs to be between e1 and h8. Value was: {notation}.");
             }
@@ -134,10 +134,7 @@ namespace MeracleChess
             return new Position(x, y);
         }
 
-        public override string ToString()
-        {
-            return $"{_files[X]}{_ranks[Y]}";
-        }
+        public override string ToString() => $"{Files[X]}{Ranks[Y]}";
 
         public static bool operator == (Position? p1, Position? p2)
         {

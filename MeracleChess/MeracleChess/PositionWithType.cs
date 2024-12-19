@@ -2,17 +2,11 @@
 
 namespace MeracleChess
 {
-	public record struct PositionWithType
+	public readonly record struct PositionWithType(Position Position, TypeOfMove Type)
 	{
-		public Position Position { get; }
+		public Position Position { get; } = Position;
 
-		public TypeOfMove Type { get; }
-
-		public PositionWithType(Position position, TypeOfMove type)
-		{
-			Position = position;
-			Type = type;
-		}
+		public TypeOfMove Type { get; } = Type;
 	}
 }
 

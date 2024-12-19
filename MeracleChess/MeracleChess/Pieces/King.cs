@@ -2,39 +2,30 @@
 
 namespace MeracleChess.Pieces
 {
-    public class King : Piece
+    public class King(Board board, Color color, Position startingPosition, bool hasMovedSinceStart = false)
+        : Piece(board, color, startingPosition, hasMovedSinceStart)
     {
-        public override string NotationSymbol => this.Color == Color.White ? "K" : "k";
+        public override string NotationSymbol => Color == Color.White ? "K" : "k";
         public override string FenSymbol => NotationSymbol;
 
         public bool IsChecked => Board.PositionIsAttackedByOpponentPiece(Color, CurrentPosition);
-
-        public King(Board board, Color color, Position startingPosition, bool hasMovedSinceStart = false) : base(board, color, startingPosition, hasMovedSinceStart)
-        {
-        }
 
         public override string ToString() => "king";
 
         public KingState GetKingState()
         {
-            KingState state = KingState.Normal;
-            List<Piece> piecesOfSameColor = Board.Pieces.Where(x => x.Color == Color).ToList();
-
+            IEnumerable<Piece> piecesOfSameColor = Board.Pieces.Where(x => x.Color == Color);
             bool validPositionsAvailableInTeam = piecesOfSameColor.Any(x => x.GetValidPositions().Any());
-
+            
             if (IsChecked)
             {
-                state = validPositionsAvailableInTeam ? KingState.Checked : KingState.CheckMated;
+                return validPositionsAvailableInTeam ? KingState.Checked : KingState.CheckMated;
             }
-            else
-            {
-                state = validPositionsAvailableInTeam ? KingState.Normal : KingState.StaleMated;
-            }
-
-            return state;
+            
+            return validPositionsAvailableInTeam ? KingState.Normal : KingState.StaleMated;
         }
 
-        public override List<PositionWithType> GetValidPositions()
+        public override IEnumerable<PositionWithType> GetValidPositions()
         {
             List<PositionWithType> result = GetValidMoves();
 
@@ -53,18 +44,18 @@ namespace MeracleChess.Pieces
             return result;
         }
 
-        public override List<Position> GetAttackedPositions()
+        public override IEnumerable<Position> GetAttackedPositions()
         {
             return new List<Position>()
             {
-                new Position(CurrentPosition.X - 1, CurrentPosition.Y + 1),
-                new Position(CurrentPosition.X, CurrentPosition.Y + 1),
-                new Position(CurrentPosition.X + 1, CurrentPosition.Y + 1),
-                new Position(CurrentPosition.X + 1, CurrentPosition.Y),
-                new Position(CurrentPosition.X + 1, CurrentPosition.Y - 1),
-                new Position(CurrentPosition.X, CurrentPosition.Y - 1),
-                new Position(CurrentPosition.X - 1, CurrentPosition.Y - 1),
-                new Position(CurrentPosition.X - 1, CurrentPosition.Y),
+                new(CurrentPosition.X - 1, CurrentPosition.Y + 1),
+                new(CurrentPosition.X, CurrentPosition.Y + 1),
+                new(CurrentPosition.X + 1, CurrentPosition.Y + 1),
+                new(CurrentPosition.X + 1, CurrentPosition.Y),
+                new(CurrentPosition.X + 1, CurrentPosition.Y - 1),
+                new(CurrentPosition.X, CurrentPosition.Y - 1),
+                new(CurrentPosition.X - 1, CurrentPosition.Y - 1),
+                new(CurrentPosition.X - 1, CurrentPosition.Y),
             };
         }
 
@@ -73,14 +64,14 @@ namespace MeracleChess.Pieces
             List<PositionWithType> result = new List<PositionWithType>();
             List<Position> possibleMoves = new List<Position>()
             {
-                new Position(CurrentPosition.X - 1, CurrentPosition.Y + 1),
-                new Position(CurrentPosition.X, CurrentPosition.Y + 1),
-                new Position(CurrentPosition.X + 1, CurrentPosition.Y + 1),
-                new Position(CurrentPosition.X + 1, CurrentPosition.Y),
-                new Position(CurrentPosition.X + 1, CurrentPosition.Y - 1),
-                new Position(CurrentPosition.X, CurrentPosition.Y - 1),
-                new Position(CurrentPosition.X - 1, CurrentPosition.Y - 1),
-                new Position(CurrentPosition.X - 1, CurrentPosition.Y),
+                new(CurrentPosition.X - 1, CurrentPosition.Y + 1),
+                new(CurrentPosition.X, CurrentPosition.Y + 1),
+                new(CurrentPosition.X + 1, CurrentPosition.Y + 1),
+                new(CurrentPosition.X + 1, CurrentPosition.Y),
+                new(CurrentPosition.X + 1, CurrentPosition.Y - 1),
+                new(CurrentPosition.X, CurrentPosition.Y - 1),
+                new(CurrentPosition.X - 1, CurrentPosition.Y - 1),
+                new(CurrentPosition.X - 1, CurrentPosition.Y),
             };
 
             foreach (Position position in possibleMoves)
@@ -133,8 +124,8 @@ namespace MeracleChess.Pieces
             {
                 positionsThatNeedToBeEmptyAndNotCausingCheck = new List<Position>()
                 {
-                    new Position(CurrentPosition.X + 1, CurrentPosition.Y),
-                    new Position(CurrentPosition.X + 2, CurrentPosition.Y)
+                    new(CurrentPosition.X + 1, CurrentPosition.Y),
+                    new(CurrentPosition.X + 2, CurrentPosition.Y)
                 };
 
                 positionOfRook = new Position(CurrentPosition.X + 3, CurrentPosition.Y);
@@ -143,9 +134,9 @@ namespace MeracleChess.Pieces
             {
                 positionsThatNeedToBeEmptyAndNotCausingCheck = new List<Position>()
                 {
-                    new Position(CurrentPosition.X - 1, CurrentPosition.Y),
-                    new Position(CurrentPosition.X - 2, CurrentPosition.Y),
-                    new Position(CurrentPosition.X - 3, CurrentPosition.Y)
+                    new(CurrentPosition.X - 1, CurrentPosition.Y),
+                    new(CurrentPosition.X - 2, CurrentPosition.Y),
+                    new(CurrentPosition.X - 3, CurrentPosition.Y)
                 };
 
                 positionOfRook = new Position(CurrentPosition.X - 4, CurrentPosition.Y);

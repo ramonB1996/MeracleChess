@@ -4,29 +4,26 @@ using MeracleChess.Pieces;
 
 namespace MeracleChess
 {
-    public class Move : EventArgs
+    public class Move(
+        Position from,
+        Position to,
+        Piece piece,
+        TypeOfMove typeOfMove,
+        KingState kingState,
+        Piece? promotedToPiece)
+        : EventArgs
     {
-        public Position From { get; }
+        public Position From { get; } = from;
 
-        public Position To { get; }
+        public Position To { get; } = to;
 
-        public Piece Piece { get; }
+        public Piece Piece { get; } = piece;
 
-        public TypeOfMove TypeOfMove { get; }
+        public TypeOfMove TypeOfMove { get; } = typeOfMove;
 
-        public KingState KingState { get; }
+        public KingState KingState { get; } = kingState;
 
-        public Piece? PromotedToPiece { get; }
-
-        public Move(Position from, Position to, Piece piece, TypeOfMove typeOfMove, KingState kingState, Piece? promotedToPiece)
-        {
-            From = from;
-            To = to;
-            Piece = piece;
-            TypeOfMove = typeOfMove;
-            KingState = kingState;
-            PromotedToPiece = promotedToPiece;
-        }
+        public Piece? PromotedToPiece { get; } = promotedToPiece;
 
         public override string ToString()
         {
