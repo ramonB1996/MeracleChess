@@ -125,20 +125,45 @@ namespace MeracleChess
             }
         }
 
+        // https://www.chess.com/terms/draw-chess
+        // Todo: 50 move rule and threefold repetition detection
         private bool CheckIfGameIsDraw()
         {
-            // Insufficient material, only 2 kings left
+            return DrawByInsufficientMaterial();
+        }
+
+        private bool DrawByInsufficientMaterial()
+        {
+            // King vs. King
             if (Pieces.Count == 2)
             {
                 return true;
             }
-
-            // Insufficient material, only king + knight or king + bishop left vs. king.
+            
+            // King + Bishop vs. King or King + Knight vs. King
             if (Pieces.Count == 3 && Pieces.FirstOrDefault(x => x is Bishop || x is Knight) != null)
             {
                 return true;
             }
 
+            // King + Bishop vs. King + Bishop of same color
+            if (Pieces.OfType<King>().Count() == 2 && Pieces.OfType<Bishop>().Count() == 2)
+            {
+                var whiteBishop = Pieces.FirstOrDefault(x => x is Bishop && x.Color == Color.White);
+                var blackBishop = Pieces.FirstOrDefault(x => x is Bishop && x.Color == Color.Black);
+
+                if (whiteBishop != null && blackBishop != null)
+                {
+                    var whiteTileColor = Tiles.First(x => x.Position == whiteBishop.CurrentPosition).Color;
+                    var blackTileColor = Tiles.First(x => x.Position == blackBishop.CurrentPosition).Color;
+
+                    if (whiteTileColor == blackTileColor)
+                    {
+                        return true;
+                    }
+                }
+            }
+            
             return false;
         }
 
