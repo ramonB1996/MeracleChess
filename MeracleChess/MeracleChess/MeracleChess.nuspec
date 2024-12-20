@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MeracleChess.Core</id>
-    <version>0.1.0-alpha</version>
+    <version>0.3.0-alpha</version>
     <title>MeracleChess.Core</title>
     <authors>ramonb1996</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -13,10 +13,15 @@
     <releaseNotes>Initial release</releaseNotes>
     <tags>chess</tags>
     <readme>README.md</readme>
+
+    <dependencies>
+      <group targetFramework="net9.0"/>
+    </dependencies>
   </metadata>
 
   <!-- A readme.txt to display when the package is installed -->
   <files>
     <file src="README.md" target="" />
+    <file src="bin\Release\net9.0\*.dll" target="lib\net9.0"/>
   </files>
 </package>
