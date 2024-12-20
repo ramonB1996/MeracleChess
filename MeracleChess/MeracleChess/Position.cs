@@ -27,8 +27,20 @@ namespace MeracleChess
             Y = position.Y;
         }
 
-        private static int GetColumnFromCharacter(char character) => Files.IndexOf(character);
-        private static int GetRowFromCharacter(char character) => Ranks.IndexOf(character);
+        /// <summary>
+        /// Get column number from the character of the column.
+        /// </summary>
+        /// <param name="character"></param>
+        /// <returns></returns>
+        public static int GetColumnFromCharacter(char character) => Files.IndexOf(character);
+        
+        
+        /// <summary>
+        /// Get row number from the character of the row.
+        /// </summary>
+        /// <param name="character"></param>
+        /// <returns></returns>
+        public static int GetRowFromCharacter(char character) => Ranks.IndexOf(character);
 
         public static Position GetPositionInDirection(Position position, MoveDirection direction)
         {
