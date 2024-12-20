@@ -14,7 +14,7 @@ namespace MeracleChess.Pieces
 
         public KingState GetKingState()
         {
-            IEnumerable<Piece> piecesOfSameColor = Board.Pieces.Where(x => x.Color == Color);
+            List<Piece> piecesOfSameColor = Board.Pieces.Where(x => x.Color == Color).ToList();
             bool validPositionsAvailableInTeam = piecesOfSameColor.Any(x => x.GetValidPositions().Any());
             
             if (IsChecked)
@@ -25,7 +25,7 @@ namespace MeracleChess.Pieces
             return validPositionsAvailableInTeam ? KingState.Normal : KingState.StaleMated;
         }
 
-        public override IEnumerable<PositionWithType> GetValidPositions()
+        public override List<PositionWithType> GetValidPositions()
         {
             List<PositionWithType> result = GetValidMoves();
 
@@ -44,7 +44,7 @@ namespace MeracleChess.Pieces
             return result;
         }
 
-        public override IEnumerable<Position> GetAttackedPositions()
+        public override List<Position> GetAttackedPositions()
         {
             return new List<Position>()
             {

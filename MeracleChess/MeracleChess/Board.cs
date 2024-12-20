@@ -29,7 +29,7 @@ namespace MeracleChess
 
         public King TheirKing(Color color) => Pieces.OfType<King>().First(x => x.Color != color);
 
-        public IEnumerable<Piece> OpponentPiecesCausingCheck(Color color) => Pieces.Where(x => x is not King && x.Color != color && x.GetAttackedPositions().Contains(OurKing(color).CurrentPosition));
+        public List<Piece> OpponentPiecesCausingCheck(Color color) => Pieces.Where(x => x is not King && x.Color != color && x.GetAttackedPositions().Contains(OurKing(color).CurrentPosition)).ToList();
 
         public int ScoreForWhite => Pieces.Where(x => x.Color == Color.White).Sum(x => x.Value);
         public int ScoreForBlack => Pieces.Where(x => x.Color == Color.Black).Sum(x => x.Value);
@@ -94,9 +94,9 @@ namespace MeracleChess
         /// Create the pieces on the board, with a custom setup (for a game that is already in progress or a puzzle).
         /// </summary>
         /// <param name="piecesOnBoard"></param>
-        public void InitializePieces(IEnumerable<Piece> piecesOnBoard)
+        public void InitializePieces(List<Piece> piecesOnBoard)
         {
-            Pieces = piecesOnBoard.ToList();
+            Pieces = piecesOnBoard;
         }
 
         public void MovePiece(Position from, PositionWithType toWithType, Piece piece, Piece? promotedToPiece = null, bool isCastlingMove = false)
@@ -218,7 +218,7 @@ namespace MeracleChess
             return Tiles.Any(x => x.Position == position);
         }
 
-        public IEnumerable<PositionWithType> GetValidPositionsForDirection(Piece currentPiece, MoveDirection direction)
+        public List<PositionWithType> GetValidPositionsForDirection(Piece currentPiece, MoveDirection direction)
         {
             List<PositionWithType> result = new List<PositionWithType>();
 
@@ -242,7 +242,7 @@ namespace MeracleChess
             return result;
         }
 
-        public IEnumerable<Position> GetPositionsInBoundsAndNotBlockedForDirection(Piece currentPiece, MoveDirection direction)
+        public List<Position> GetPositionsInBoundsAndNotBlockedForDirection(Piece currentPiece, MoveDirection direction)
         {
             List<Position> result = new List<Position>();
             Position position = currentPiece.CurrentPosition;
@@ -277,7 +277,7 @@ namespace MeracleChess
             return result;
         }
 
-        public IEnumerable<Position> GetAttackingPositionsForDirection(Piece currentPiece, MoveDirection direction) => GetPositionsInBoundsAndNotBlockedForDirection(currentPiece, direction);
+        public List<Position> GetAttackingPositionsForDirection(Piece currentPiece, MoveDirection direction) => GetPositionsInBoundsAndNotBlockedForDirection(currentPiece, direction);
 
         public bool PositionIsAttackedByOpponentPiece(Color ourColor, Position position) => Pieces.Any(x => x.Color != ourColor && x.GetAttackedPositions().Contains(position));
 

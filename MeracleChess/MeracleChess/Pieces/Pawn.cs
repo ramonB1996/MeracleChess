@@ -14,7 +14,7 @@ namespace MeracleChess.Pieces
 
         public override string ToString() => "pawn";
 
-        public override IEnumerable<PositionWithType> GetValidMoves()
+        public override List<PositionWithType> GetValidMoves()
         {
             List<PositionWithType> result = new List<PositionWithType>();
 
@@ -47,7 +47,7 @@ namespace MeracleChess.Pieces
             return result;
         }
 
-        public override IEnumerable<Position> GetAttackedPositions() => GetAttackablePositions().Select(x => x.Position).ToList();
+        public override List<Position> GetAttackedPositions() => GetAttackablePositions().Select(x => x.Position).ToList();
 
         private Position? Get1TileMove()
         {
@@ -120,7 +120,7 @@ namespace MeracleChess.Pieces
             return null;
         }
         
-        private IEnumerable<PositionWithType> GetAttackablePositions()
+        private List<PositionWithType> GetAttackablePositions()
         {
             List<PositionWithType> result = new List<PositionWithType>();
 

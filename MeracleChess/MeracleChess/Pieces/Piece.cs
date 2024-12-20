@@ -45,10 +45,10 @@ namespace MeracleChess.Pieces
         /// <summary>
         /// List of positions that are valid for this piece with the type of the action needed to claim the position.
         /// </summary>
-        /// <returns>Returns an <see cref="IEnumerable{T}" /> of type <see cref="PositionWithType"/></returns>
-        public virtual IEnumerable<PositionWithType> GetValidPositions()
+        /// <returns>Returns an <see cref="List{T}" /> of type <see cref="PositionWithType"/></returns>
+        public virtual List<PositionWithType> GetValidPositions()
         {
-            IEnumerable<PositionWithType> result = GetValidMoves();
+            List<PositionWithType> result = GetValidMoves();
 
             (bool isDenyingCheck, List<Position> allowedPositions) = IsDenyingCheckWithPositions();
 
@@ -59,7 +59,7 @@ namespace MeracleChess.Pieces
 
             if (Board.OurKing(Color).IsChecked)
             {
-                IEnumerable<Position> possibleMovesToDenyCheck = ShowPossibleMovesToDenyCheck();
+                List<Position> possibleMovesToDenyCheck = ShowPossibleMovesToDenyCheck();
 
                 return result.Where(x => possibleMovesToDenyCheck.Contains(x.Position)).ToList();
             }
@@ -75,7 +75,7 @@ namespace MeracleChess.Pieces
         /// <exception cref="NotFoundException">Rook was not in correct position needed for castling.</exception>
         public void MoveToPosition(PositionWithType positionWithType)
         {
-            IEnumerable<PositionWithType> validPositions = GetValidPositions();
+            List<PositionWithType> validPositions = GetValidPositions();
 
             if (!validPositions.Contains(positionWithType))
             {
@@ -138,15 +138,15 @@ namespace MeracleChess.Pieces
             }
         }
         
-        public abstract IEnumerable<Position> GetAttackedPositions();
+        public abstract List<Position> GetAttackedPositions();
         
-        public abstract IEnumerable<PositionWithType> GetValidMoves();
+        public abstract List<PositionWithType> GetValidMoves();
         
-        private IEnumerable<Position> ShowPossibleMovesToDenyCheck()
+        private List<Position> ShowPossibleMovesToDenyCheck()
         {
-            IList<Position> result = new List<Position>();
+            List<Position> result = new List<Position>();
 
-            IEnumerable<Piece> opponentPiecesCausingCheck = Board.OpponentPiecesCausingCheck(Color);
+            List<Piece> opponentPiecesCausingCheck = Board.OpponentPiecesCausingCheck(Color);
 
             if (!opponentPiecesCausingCheck.Any() || opponentPiecesCausingCheck.Count() > 2)
             {

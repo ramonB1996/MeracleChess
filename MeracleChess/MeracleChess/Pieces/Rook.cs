@@ -11,7 +11,7 @@ public class Rook(Board board, Color color, Position startingPosition, bool hasM
 
     public override string ToString() => "rook";
 
-    public override IEnumerable<PositionWithType> GetValidMoves()
+    public override List<PositionWithType> GetValidMoves()
     {
         List<PositionWithType> result = new List<PositionWithType>();
 
@@ -23,7 +23,7 @@ public class Rook(Board board, Color color, Position startingPosition, bool hasM
         return result;
     }
 
-    public override IEnumerable<Position> GetAttackedPositions()
+    public override List<Position> GetAttackedPositions()
     {
         List<Position> result = new List<Position>();
 

@@ -11,7 +11,7 @@ namespace MeracleChess.Pieces
 
         public override string ToString() => "bishop";
 
-        public override IEnumerable<PositionWithType> GetValidMoves()
+        public override List<PositionWithType> GetValidMoves()
         {
             List<PositionWithType> result = new List<PositionWithType>();
             
@@ -23,7 +23,7 @@ namespace MeracleChess.Pieces
             return result;
         }
 
-        public override IEnumerable<Position> GetAttackedPositions()
+        public override List<Position> GetAttackedPositions()
         {
             List<Position> result = new List<Position>();
 
